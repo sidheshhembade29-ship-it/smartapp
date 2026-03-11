@@ -1,0 +1,61 @@
+body {
+  background: #0a0a0a;
+  color: #fff;
+  font-family: 'Outfit', 'Inter', sans-serif;
+  margin: 0;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  background: #1a1a1a;
+  border-bottom: 1px solid #222;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+#device-list {
+  padding: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.device-card {
+  background: #1a1a1a;
+  border: 1px solid #222;
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  width: 300px;
+  color: #fff;
+}
+
+.device-card .device-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.device-controls {
+  margin-top: 1rem;
+}
+
+#notification-center {
+  position: relative;
+}
+
+#settings-tab {
+  padding: 2rem;
+}
+
+.settings-section {
+  background: #1a1a1a;
+  border: 1px solid #222;
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}

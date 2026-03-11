@@ -1,0 +1,5 @@
+{
+  "name": "Lumina Smart Home",
+  "description": "A comprehensive smart home control dashboard with secure login and real-time device management.",
+  "requestFramePermissions": []
+}

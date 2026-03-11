@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Device Details</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <style>
+    .details-container {
+      max-width: 500px;
+      margin: 3rem auto;
+      background: #1a1a1a;
+      border: 1px solid #222;
+      border-radius: 2rem;
+      padding: 2rem;
+      color: #fff;
+    }
+    .details-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+    .details-room {
+      color: #aaa;
+      margin-bottom: 1rem;
+    }
+    .details-controls {
+      margin-bottom: 2rem;
+    }
+    .details-history {
+      margin-top: 2rem;
+    }
+    .details-history-title {
+      font-size: 1rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    .details-history-list {
+      max-height: 200px;
+      overflow-y: auto;
+      background: #222;
+      border-radius: 1rem;
+      padding: 1rem;
+    }
+    .details-history-item {
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+      color: #10b981;
+    }
+    .details-actions button {
+      background: #10b981;
+      color: #111;
+      font-weight: bold;
+      border: none;
+      border-radius: 1rem;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-right: 1rem;
+      margin-top: 1rem;
+      transition: background 0.2s;
+    }
+    .details-actions button:last-child {
+      background: #222;
+      color: #fff;
+    }
+    .details-actions button:hover {
+      background: #059669;
+    }
+  </style>
+</head>
+<body>
+  <div class="details-container" id="device-details"></div>
+  <script src="device-details.js"></script>
+</body>
+</html>

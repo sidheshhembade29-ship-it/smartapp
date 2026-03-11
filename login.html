@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Home Login</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <style>
+    .login-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: #0a0a0a;
+    }
+    .login-box {
+      background: #1a1a1a;
+      border: 1px solid #222;
+      border-radius: 2rem;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 4px 32px #0008;
+      width: 350px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .login-title {
+      font-size: 2rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .login-box input {
+      padding: 0.75rem 1rem;
+      border-radius: 1rem;
+      border: 1px solid #333;
+      background: #222;
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+    .login-box button {
+      background: #10b981;
+      color: #111;
+      font-weight: bold;
+      border: none;
+      border-radius: 1rem;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .login-box button:hover {
+      background: #059669;
+    }
+    .login-error {
+      color: #ef4444;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <form class="login-box" id="login-form">
+      <div class="login-title">Smart Home Login</div>
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+      <div class="login-error" id="login-error"></div>
+    </form>
+  </div>
+  <script src="login.js"></script>
+</body>
+</html>
