@@ -15,11 +15,11 @@ async function loadDeviceDetails() {
 
   let controls = '';
   if (device.type === 'light') {
-    controls += `<label>Brightness: <input type="range" min="0" max="100" value="${device.state.brightness || 100}" id="brightness"></label>`;
+    controls += `<label>Brightness: <input type="range" min="0" max="100" value="${device.state.brightness || 100}" id="brightness" name="brightness" class="details-input"></label>`;
   }
   if (device.type === 'thermostat') {
-    controls += `<label>Temperature: <input type="range" min="16" max="30" value="${device.state.temp || 22}" id="temp"></label>`;
-    controls += `<div>Mode: <button id="mode-cool">Cool</button> <button id="mode-heat">Heat</button> <button id="mode-eco">Eco</button></div>`;
+    controls += `<label>Temperature: <input type="range" min="16" max="30" value="${device.state.temp || 22}" id="temp" name="temp" class="details-input"></label>`;
+    controls += `<div>Mode: <button id="mode-cool-btn" class="mode-btn">Cool</button> <button id="mode-heat-btn" class="mode-btn">Heat</button> <button id="mode-eco-btn" class="mode-btn">Eco</button></div>`;
   }
 
   details.innerHTML = `
@@ -27,8 +27,8 @@ async function loadDeviceDetails() {
     <div class="details-room">Room: ${device.room}</div>
     <div class="details-controls">${controls}</div>
     <div class="details-actions">
-      <button id="toggle">Toggle Power</button>
-      <button id="close">Close</button>
+      <button id="toggle-power-btn">Toggle Power</button>
+      <button id="close-details-btn">Close</button>
     </div>
     <div class="details-history">
       <div class="details-history-title">Activity History</div>
@@ -55,7 +55,7 @@ async function loadDeviceDetails() {
       });
     };
     ['cool','heat','eco'].forEach(mode => {
-      document.getElementById(`mode-${mode}`).onclick = async () => {
+      document.getElementById(`mode-${mode}-btn`).onclick = async () => {
         await fetch(`/api/devices/${id}/state`, {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
@@ -64,11 +64,11 @@ async function loadDeviceDetails() {
       };
     });
   }
-  document.getElementById('toggle').onclick = async () => {
+  document.getElementById('toggle-power-btn').onclick = async () => {
     await fetch(`/api/devices/${id}/toggle`, { method: 'POST' });
     loadDeviceDetails();
   };
-  document.getElementById('close').onclick = () => {
+  document.getElementById('close-details-btn').onclick = () => {
     window.location.href = 'dashboard.html';
   };
 

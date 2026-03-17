@@ -13,9 +13,9 @@ async function loadDevices() {
       <div class="device-title">${device.name} (${device.type})</div>
       <div>Room: ${device.room}</div>
       <div class="device-controls">
-        ${device.type === 'light' ? `<label>Brightness: <input type="range" min="0" max="100" value="${device.state.brightness || 100}" data-id="${device.id}" data-type="brightness"></label>` : ''}
-        ${device.type === 'thermostat' ? `<label>Temperature: <input type="range" min="16" max="30" value="${device.state.temp || 22}" data-id="${device.id}" data-type="temp"></label>` : ''}
-        <button data-id="${device.id}" data-type="toggle">Toggle Power</button>
+        ${device.type === 'light' ? `<label>Brightness: <input id="device-brightness-${device.id}" name="brightness" class="device-input" type="range" min="0" max="100" value="${device.state.brightness || 100}" data-id="${device.id}" data-type="brightness"></label>` : ''}
+        ${device.type === 'thermostat' ? `<label>Temperature: <input id="device-temp-${device.id}" name="temp" class="device-input" type="range" min="16" max="30" value="${device.state.temp || 22}" data-id="${device.id}" data-type="temp"></label>` : ''}
+        <button id="device-toggle-${device.id}" data-id="${device.id}" data-type="toggle">Toggle Power</button>
       </div>
     `;
     deviceList.appendChild(card);

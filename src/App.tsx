@@ -5,15 +5,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  LayoutDashboard, 
-  Lightbulb, 
-  Thermometer, 
-  Lock, 
-  Camera, 
-  Power, 
-  Settings, 
-  LogOut, 
+import {
+  LayoutDashboard,
+  Lightbulb,
+  Thermometer,
+  Lock,
+  Camera,
+  Power,
+  Settings,
+  LogOut,
   User as UserIcon,
   ChevronRight,
   Plus,
@@ -33,13 +33,13 @@ import {
 } from 'lucide-react';
 import { Device, User, Automation, HistoryEntry, Notification, UserSettings } from './types';
 import { GoogleGenAI } from "@google/genai";
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
   AreaChart,
   Area
@@ -51,7 +51,7 @@ const Modal = ({ isOpen, onClose, title, children }: { isOpen: boolean, onClose:
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
@@ -59,7 +59,7 @@ const Modal = ({ isOpen, onClose, title, children }: { isOpen: boolean, onClose:
       >
         <div className="flex justify-between items-center p-6 border-b border-white/5">
           <h3 className="text-xl font-bold">{title}</h3>
-          <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors">
+          <button id="modal-close-button" onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -76,17 +76,17 @@ const NotificationCenter = ({ notifications, onRead }: { notifications: Notifica
 
   return (
     <div className="relative group">
-      <button className="relative p-3 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-colors">
+      <button id="notification-center-toggle" className="relative p-3 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-colors">
         <Bell className="w-5 h-5" />
         {unreadCount > 0 && (
           <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
         )}
       </button>
-      
+
       <div className="absolute right-0 mt-2 w-80 bg-[#1a1a1a] border border-white/10 rounded-3xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 p-4">
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-bold">Notifications</h3>
-          <button onClick={onRead} className="text-xs text-emerald-500 font-bold hover:underline">Mark all as read</button>
+          <button id="mark-all-read-button" onClick={onRead} className="text-xs text-emerald-500 font-bold hover:underline">Mark all as read</button>
         </div>
         <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
           {notifications.length === 0 ? (
@@ -161,14 +161,14 @@ const DeviceDetails = ({ device, onToggle, onClose }: { device: Device, onToggle
             <AreaChart data={chartData}>
               <defs>
                 <linearGradient id="colorVal" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
               <XAxis dataKey="time" stroke="#ffffff30" fontSize={10} tickLine={false} axisLine={false} />
               <YAxis stroke="#ffffff30" fontSize={10} tickLine={false} axisLine={false} />
-              <Tooltip 
+              <Tooltip
                 contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #ffffff10', borderRadius: '12px' }}
                 itemStyle={{ color: '#10b981' }}
               />
@@ -185,10 +185,11 @@ const DeviceDetails = ({ device, onToggle, onClose }: { device: Device, onToggle
               <span className="font-bold">Brightness</span>
               <span className="text-emerald-500 font-bold">{brightness}%</span>
             </div>
-            <input 
-              type="range" 
-              min="0" max="100" 
-              value={brightness} 
+            <input
+              id="brightness-slider"
+              type="range"
+              min="0" max="100"
+              value={brightness}
               onChange={handleBrightnessChange}
               className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-emerald-500"
             />
@@ -201,17 +202,19 @@ const DeviceDetails = ({ device, onToggle, onClose }: { device: Device, onToggle
               <span className="font-bold">Temperature</span>
               <span className="text-emerald-500 font-bold">{temp}°C</span>
             </div>
-            <input 
-              type="range" 
-              min="16" max="30" 
-              value={temp} 
+            <input
+              id="temp-slider"
+              type="range"
+              min="16" max="30"
+              value={temp}
               onChange={handleTempChange}
               className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-emerald-500"
             />
             <div className="grid grid-cols-3 gap-2">
               {['cool', 'heat', 'eco'].map(mode => (
-                <button 
+                <button
                   key={mode}
+                  id={`mode-${mode}-btn`}
                   onClick={() => onToggle(device.id, { ...device.state, mode })}
                   className={`py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors ${device.state.mode === mode ? 'bg-emerald-500 text-black' : 'bg-white/5 hover:bg-white/10'}`}
                 >
@@ -223,7 +226,8 @@ const DeviceDetails = ({ device, onToggle, onClose }: { device: Device, onToggle
         )}
 
         <div className="pt-6 border-t border-white/5 flex gap-4">
-          <button 
+          <button
+            id="toggle-power-button"
             onClick={() => {
               let newState = { ...device.state };
               if (device.type === 'light') newState.on = !newState.on;
@@ -235,7 +239,8 @@ const DeviceDetails = ({ device, onToggle, onClose }: { device: Device, onToggle
           >
             Toggle Power
           </button>
-          <button 
+          <button
+            id="close-modal-button"
             onClick={onClose}
             className="flex-1 bg-white/5 text-white font-bold py-4 rounded-2xl hover:bg-white/10 transition-colors"
           >
@@ -261,18 +266,20 @@ const SettingsTab = ({ username, settings, onUpdate }: { username: string, setti
             <Palette className="w-5 h-5 text-emerald-500" />
             <h3 className="font-bold">Appearance</h3>
           </div>
-          
+
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-sm font-medium">Theme</span>
               <div className="flex bg-white/5 p-1 rounded-xl border border-white/10">
-                <button 
+                <button
+                  id="theme-dark-btn"
                   onClick={() => onUpdate({ ...settings, theme: 'dark' })}
                   className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${settings.theme === 'dark' ? 'bg-emerald-500 text-black' : 'text-white/40'}`}
                 >
                   Dark
                 </button>
-                <button 
+                <button
+                  id="theme-light-btn"
                   onClick={() => onUpdate({ ...settings, theme: 'light' })}
                   className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${settings.theme === 'light' ? 'bg-emerald-500 text-black' : 'text-white/40'}`}
                 >
@@ -285,8 +292,9 @@ const SettingsTab = ({ username, settings, onUpdate }: { username: string, setti
               <span className="text-sm font-medium">Accent Color</span>
               <div className="flex gap-2">
                 {['#10b981', '#6366f1', '#f59e0b', '#ef4444'].map(color => (
-                  <button 
+                  <button
                     key={color}
+                    id={`accent-color-btn-${color.replace('#', '')}`}
                     onClick={() => onUpdate({ ...settings, accentColor: color })}
                     className={`w-6 h-6 rounded-full border-2 transition-transform hover:scale-110 ${settings.accentColor === color ? 'border-white' : 'border-transparent'}`}
                     style={{ backgroundColor: color }}
@@ -302,13 +310,14 @@ const SettingsTab = ({ username, settings, onUpdate }: { username: string, setti
             <Bell className="w-5 h-5 text-emerald-500" />
             <h3 className="font-bold">Notifications</h3>
           </div>
-          
+
           <div className="flex justify-between items-center">
             <div>
               <span className="text-sm font-medium block">Push Notifications</span>
               <span className="text-xs text-white/30">Get alerts for security events</span>
             </div>
-            <button 
+            <button
+              id="push-notifications-toggle"
               onClick={() => onUpdate({ ...settings, notificationsEnabled: !settings.notificationsEnabled })}
               className={`w-12 h-6 rounded-full relative transition-colors ${settings.notificationsEnabled ? 'bg-emerald-500' : 'bg-white/10'}`}
             >
@@ -330,9 +339,9 @@ const AddDeviceForm = ({ onAdd, onClose }: { onAdd: (device: Partial<Device>) =>
     e.preventDefault();
     const id = `${type}-${Date.now()}`;
     const initialState = type === 'light' ? { on: false, brightness: 100 } :
-                        type === 'thermostat' ? { temp: 22, mode: 'cool' } :
-                        type === 'lock' ? { locked: true } :
-                        { active: true };
+      type === 'thermostat' ? { temp: 22, mode: 'cool' } :
+        type === 'lock' ? { locked: true } :
+          { active: true };
     onAdd({ id, name, room, type, state: initialState });
   };
 
@@ -340,8 +349,9 @@ const AddDeviceForm = ({ onAdd, onClose }: { onAdd: (device: Partial<Device>) =>
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
         <label className="block text-xs font-bold uppercase tracking-wider text-white/40 mb-2">Device Name</label>
-        <input 
-          type="text" 
+        <input
+          name="device-name"
+          type="text"
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -352,7 +362,8 @@ const AddDeviceForm = ({ onAdd, onClose }: { onAdd: (device: Partial<Device>) =>
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-white/40 mb-2">Room</label>
-          <select 
+          <select
+            name="device-room"
             value={room}
             onChange={(e) => setRoom(e.target.value)}
             className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-emerald-500"
@@ -364,7 +375,8 @@ const AddDeviceForm = ({ onAdd, onClose }: { onAdd: (device: Partial<Device>) =>
         </div>
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-white/40 mb-2">Type</label>
-          <select 
+          <select
+            name="device-type"
             value={type}
             onChange={(e) => setType(e.target.value as any)}
             className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-emerald-500"
@@ -376,10 +388,10 @@ const AddDeviceForm = ({ onAdd, onClose }: { onAdd: (device: Partial<Device>) =>
         </div>
       </div>
       <div className="pt-4 flex gap-4">
-        <button type="submit" className="flex-1 bg-emerald-500 text-black font-bold py-4 rounded-2xl hover:bg-emerald-400">
+        <button type="submit" id="submit-device-button" className="flex-1 bg-emerald-500 text-black font-bold py-4 rounded-2xl hover:bg-emerald-400">
           Add Device
         </button>
-        <button type="button" onClick={onClose} className="flex-1 bg-white/5 text-white font-bold py-4 rounded-2xl hover:bg-white/10">
+        <button type="button" onClick={onClose} id="cancel-device-button" className="flex-1 bg-white/5 text-white font-bold py-4 rounded-2xl hover:bg-white/10">
           Cancel
         </button>
       </div>
@@ -429,7 +441,7 @@ const AutomationsTab = ({ role }: { role: 'admin' | 'user' }) => {
           <p className="text-white/40">Set rules to make your home smarter.</p>
         </div>
         {role === 'admin' && (
-          <button className="bg-emerald-500 text-black p-3 rounded-2xl hover:bg-emerald-400 transition-all">
+          <button id="add-device-button" className="bg-emerald-500 text-black p-3 rounded-2xl hover:bg-emerald-400 transition-all">
             <Plus className="w-6 h-6" />
           </button>
         )}
@@ -440,7 +452,7 @@ const AutomationsTab = ({ role }: { role: 'admin' | 'user' }) => {
           Array(2).fill(0).map((_, i) => <div key={i} className="h-32 bg-white/5 animate-pulse rounded-3xl" />)
         ) : (
           automations.map(auto => (
-            <div key={auto.id} className="bg-[#1a1a1a] border border-white/10 p-6 rounded-3xl flex items-center justify-between">
+            <article key={auto.id} className="bg-[#1a1a1a] border border-white/10 p-6 rounded-3xl flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className={`p-3 rounded-2xl ${auto.enabled ? 'bg-emerald-500/10 text-emerald-500' : 'bg-white/5 text-white/40'}`}>
                   <Zap className="w-6 h-6" />
@@ -450,14 +462,16 @@ const AutomationsTab = ({ role }: { role: 'admin' | 'user' }) => {
                   <p className="text-xs text-white/40 font-medium uppercase tracking-wider">{auto.trigger} → {auto.action}</p>
                 </div>
               </div>
-              <button 
+              <button
+                id={`automation-toggle-${auto.id}`}
+                name={`automation-enabled-${auto.id}`}
                 onClick={() => toggleAutomation(auto.id, !auto.enabled)}
                 disabled={role !== 'admin'}
                 className={`w-12 h-6 rounded-full relative transition-colors ${auto.enabled ? 'bg-emerald-500' : 'bg-white/10'} ${role !== 'admin' ? 'cursor-not-allowed opacity-50' : ''}`}
               >
                 <div className={`absolute top-1 w-4 h-4 rounded-full transition-all ${auto.enabled ? 'right-1 bg-black' : 'left-1 bg-white/40'}`} />
               </button>
-            </div>
+            </article>
           ))
         )}
       </div>
@@ -466,8 +480,8 @@ const AutomationsTab = ({ role }: { role: 'admin' | 'user' }) => {
 };
 
 const LoginPage = ({ onLogin }: { onLogin: (user: User) => void }) => {
-  const [username, setUsername] = useState('admin');
-  const [password, setPassword] = useState('password');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -496,7 +510,7 @@ const LoginPage = ({ onLogin }: { onLogin: (user: User) => void }) => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] text-white p-4">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md bg-[#1a1a1a] border border-white/10 p-8 rounded-3xl shadow-2xl"
@@ -512,8 +526,10 @@ const LoginPage = ({ onLogin }: { onLogin: (user: User) => void }) => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-white/40 mb-2">Username</label>
-            <input 
-              type="text" 
+            <input
+              id="username"
+              name="username"
+              type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-emerald-500 transition-colors"
@@ -522,8 +538,10 @@ const LoginPage = ({ onLogin }: { onLogin: (user: User) => void }) => {
           </div>
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-white/40 mb-2">Password</label>
-            <input 
-              type="password" 
+            <input
+              id="password"
+              name="password"
+              type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-emerald-500 transition-colors"
@@ -531,7 +549,8 @@ const LoginPage = ({ onLogin }: { onLogin: (user: User) => void }) => {
             />
           </div>
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-          <button 
+          <button
+            id="submit-button"
             type="submit"
             disabled={loading}
             className="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold py-4 rounded-xl transition-all active:scale-[0.98] disabled:opacity-50"
@@ -539,7 +558,7 @@ const LoginPage = ({ onLogin }: { onLogin: (user: User) => void }) => {
             {loading ? 'Authenticating...' : 'Sign In'}
           </button>
         </form>
-        
+
         <div className="mt-8 pt-8 border-t border-white/5 text-center">
           <p className="text-white/30 text-xs">Demo: admin / password</p>
         </div>
@@ -575,13 +594,12 @@ const DeviceCard = ({ device, onToggle }: { device: Device, onToggle: (id: strin
   };
 
   return (
-    <motion.div 
+    <motion.article
       whileHover={{ y: -4 }}
-      className={`p-5 rounded-3xl border transition-all cursor-pointer ${
-        isActive() 
-          ? 'bg-emerald-500 border-emerald-400 text-black' 
-          : 'bg-white/5 border-white/10 text-white'
-      }`}
+      className={`p-5 rounded-3xl border transition-all cursor-pointer ${isActive()
+        ? 'bg-emerald-500 border-emerald-400 text-black'
+        : 'bg-white/5 border-white/10 text-white'
+        }`}
       onClick={handleToggle}
     >
       <div className="flex justify-between items-start mb-8">
@@ -598,13 +616,13 @@ const DeviceCard = ({ device, onToggle }: { device: Device, onToggle: (id: strin
           {device.room}
         </p>
       </div>
-      {device.type === 'thermostat' && (
+      {device.type === 'thermostat' && device.state && typeof device.state.temp !== 'undefined' && (
         <div className="mt-4 flex items-center justify-between">
           <span className="text-2xl font-bold">{device.state.temp}°C</span>
-          <span className="text-xs uppercase font-bold opacity-60">{device.state.mode}</span>
+          <span className="text-xs uppercase font-bold opacity-60">{device.state.mode || ''}</span>
         </div>
       )}
-    </motion.div>
+    </motion.article>
   );
 };
 
@@ -633,10 +651,10 @@ const SmartAssistant = ({ devices }: { devices: Device[] }) => {
 
   return (
     <div className="bg-[#1a1a1a] border border-white/10 rounded-3xl p-6">
-      <div className="flex items-center gap-3 mb-4">
+      <header className="flex items-center gap-3 mb-4">
         <MessageSquare className="w-5 h-5 text-emerald-500" />
         <h2 className="font-bold">Smart Assistant</h2>
-      </div>
+      </header>
       <div className="space-y-4">
         {response && (
           <div className="bg-white/5 rounded-2xl p-4 text-sm text-white/80 border border-white/5">
@@ -644,14 +662,17 @@ const SmartAssistant = ({ devices }: { devices: Device[] }) => {
           </div>
         )}
         <div className="flex gap-2">
-          <input 
-            type="text" 
+          <input
+            id="ai-prompt-input"
+            name="ai-prompt"
+            type="text"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Ask about your home..."
             className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-500"
           />
-          <button 
+          <button
+            id="ai-ask-button"
             onClick={askAI}
             disabled={loading}
             className="bg-emerald-500 text-black px-4 py-2 rounded-xl font-bold text-sm hover:bg-emerald-400 disabled:opacity-50"
@@ -740,7 +761,7 @@ const Dashboard = ({ user, onLogout }: { user: User, onLogout: () => void }) => 
     if (selectedDevice?.id === id) {
       setSelectedDevice(prev => prev ? { ...prev, state } : null);
     }
-    
+
     try {
       await fetch(`/api/devices/${id}/state`, {
         method: 'POST',
@@ -793,12 +814,12 @@ const Dashboard = ({ user, onLogout }: { user: User, onLogout: () => void }) => 
             { id: 'automations', icon: Zap, label: 'Automations' },
             { id: 'settings', icon: Settings, label: 'Settings' },
           ].map((item) => (
-            <button 
+            <button
+              id={`nav-${item.id}`}
               key={item.id}
               onClick={() => setActiveTab(item.id as any)}
-              className={`w-full flex items-center gap-4 p-3 rounded-xl transition-colors ${
-                activeTab === item.id ? 'bg-emerald-500/10 text-emerald-500' : 'text-white/40 hover:text-white hover:bg-white/5'
-              }`}
+              className={`w-full flex items-center gap-4 p-3 rounded-xl transition-colors ${activeTab === item.id ? 'bg-emerald-500/10 text-emerald-500' : 'text-white/40 hover:text-white hover:bg-white/5'
+                }`}
             >
               <item.icon className="w-6 h-6" />
               <span className="font-medium hidden md:block">{item.label}</span>
@@ -807,7 +828,8 @@ const Dashboard = ({ user, onLogout }: { user: User, onLogout: () => void }) => 
         </nav>
 
         <div className="pt-6 border-t border-white/10">
-          <button 
+          <button
+            id="logout-button"
             onClick={onLogout}
             className="w-full flex items-center gap-4 p-3 rounded-xl text-white/40 hover:text-red-400 hover:bg-red-400/5 transition-colors"
           >
@@ -838,7 +860,7 @@ const Dashboard = ({ user, onLogout }: { user: User, onLogout: () => void }) => 
 
         <AnimatePresence mode="wait">
           {activeTab === 'dashboard' ? (
-            <motion.div 
+            <motion.div
               key="dashboard-tab"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -850,11 +872,13 @@ const Dashboard = ({ user, onLogout }: { user: User, onLogout: () => void }) => 
                 <section>
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <h3 className="text-xl font-bold">Devices</h3>
-                    
+
                     <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 w-full md:w-auto">
                       <div className="flex items-center gap-2 bg-white/5 p-1 rounded-xl border border-white/10">
                         <Filter className="w-4 h-4 ml-2 text-white/40" />
-                        <select 
+                        <select
+                          id="room-filter-select"
+                          name="room-filter"
                           value={roomFilter}
                           onChange={(e) => setRoomFilter(e.target.value)}
                           className="bg-transparent text-xs font-bold py-1 pr-2 focus:outline-none"
@@ -864,7 +888,9 @@ const Dashboard = ({ user, onLogout }: { user: User, onLogout: () => void }) => 
                       </div>
                       <div className="flex items-center gap-2 bg-white/5 p-1 rounded-xl border border-white/10">
                         <Sliders className="w-4 h-4 ml-2 text-white/40" />
-                        <select 
+                        <select
+                          id="type-filter-select"
+                          name="type-filter"
                           value={typeFilter}
                           onChange={(e) => setTypeFilter(e.target.value)}
                           className="bg-transparent text-xs font-bold py-1 pr-2 focus:outline-none"
@@ -873,7 +899,8 @@ const Dashboard = ({ user, onLogout }: { user: User, onLogout: () => void }) => 
                         </select>
                       </div>
                       {user.role === 'admin' && (
-                        <button 
+                        <button
+                          id="add-device-plus-button"
                           onClick={() => setIsAddModalOpen(true)}
                           className="bg-emerald-500 text-black p-2 rounded-xl hover:bg-emerald-400 shrink-0"
                         >
@@ -890,7 +917,7 @@ const Dashboard = ({ user, onLogout }: { user: User, onLogout: () => void }) => 
                       ))
                     ) : (
                       filteredDevices.map(device => (
-                        <div key={device.id} onClick={() => setSelectedDevice(device)}>
+                        <div key={device.id} id={`device-card-${device.id}`} onClick={() => setSelectedDevice(device)}>
                           <DeviceCard device={device} onToggle={toggleDevice} />
                         </div>
                       ))
@@ -917,7 +944,7 @@ const Dashboard = ({ user, onLogout }: { user: User, onLogout: () => void }) => 
               {/* Sidebar Info */}
               <div className="space-y-8">
                 <SmartAssistant devices={devices} />
-                
+
                 <div className="bg-[#1a1a1a] border border-white/10 rounded-3xl p-6">
                   <h3 className="font-bold mb-4">Energy Usage</h3>
                   <div className="space-y-4">
@@ -934,7 +961,7 @@ const Dashboard = ({ user, onLogout }: { user: User, onLogout: () => void }) => 
               </div>
             </motion.div>
           ) : activeTab === 'automations' ? (
-            <motion.div 
+            <motion.div
               key="automations-tab"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -943,7 +970,7 @@ const Dashboard = ({ user, onLogout }: { user: User, onLogout: () => void }) => 
               <AutomationsTab role={user.role} />
             </motion.div>
           ) : (
-            <motion.div 
+            <motion.div
               key="settings-tab"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -956,24 +983,24 @@ const Dashboard = ({ user, onLogout }: { user: User, onLogout: () => void }) => 
       </main>
 
       {/* Modals */}
-      <Modal 
-        isOpen={isAddModalOpen} 
-        onClose={() => setIsAddModalOpen(false)} 
+      <Modal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
         title="Add New Device"
       >
         <AddDeviceForm onAdd={addDevice} onClose={() => setIsAddModalOpen(false)} />
       </Modal>
 
-      <Modal 
-        isOpen={!!selectedDevice} 
-        onClose={() => setSelectedDevice(null)} 
+      <Modal
+        isOpen={!!selectedDevice}
+        onClose={() => setSelectedDevice(null)}
         title="Device Control"
       >
         {selectedDevice && (
-          <DeviceDetails 
-            device={selectedDevice} 
-            onToggle={toggleDevice} 
-            onClose={() => setSelectedDevice(null)} 
+          <DeviceDetails
+            device={selectedDevice}
+            onToggle={toggleDevice}
+            onClose={() => setSelectedDevice(null)}
           />
         )}
       </Modal>
@@ -998,7 +1025,7 @@ export default function App() {
     <div className="font-sans selection:bg-emerald-500 selection:text-black">
       <AnimatePresence mode="wait">
         {!user ? (
-          <motion.div 
+          <motion.div
             key="login"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -1008,7 +1035,7 @@ export default function App() {
             <LoginPage onLogin={handleLogin} />
           </motion.div>
         ) : (
-          <motion.div 
+          <motion.div
             key="dashboard"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
